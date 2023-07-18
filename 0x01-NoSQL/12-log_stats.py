@@ -1,15 +1,33 @@
 #!/usr/bin/env python3
-"""
-Returns list of schools having a specific topic
-Prototype: def schools_by_topic(mongo_collection, topic):
-mongo_collection will be a pymongo collection object
-topic (String) will be topic searched
+""" 12. Log stats
 """
 
 
-def schools_by_topic(mongo_collection, topic):
+from pymongo import MongoClient
+
+
+def log_stats():
+    """ log_stats.
     """
-    Prototype: def schools_by_topic(mongo_collection, topic):
-    Return list of schools having a specific topic
-    """
-    return mongo_collection.find({"topics": topic})
+    client = MongoClient('mongodb://127.0.0.1:27017')
+    logs_collection = client.logs.nginx
+    total = logs_collection.count_documents({})
+    get = logs_collection.count_documents({"method": "GET"})
+    post = logs_collection.count_documents({"method": "POST"})
+    put = logs_collection.count_documents({"method": "PUT"})
+    patch = logs_collection.count_documents({"method": "PATCH"})
+    delete = logs_collection.count_documents({"method": "DELETE"})
+    path = logs_collection.count_documents(
+        {"method": "GET", "path": "/status"})
+    print(f"{total} logs")
+    print("Methods:")
+    print(f"\tmethod GET: {get}")
+    print(f"\tmethod POST: {post}")
+    print(f"\tmethod PUT: {put}")
+    print(f"\tmethod PATCH: {patch}")
+    print(f"\tmethod DELETE: {delete}")
+    print(f"{path} status check")
+
+
+if __name__ == "__main__":
+    log_stats()
